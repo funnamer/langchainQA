@@ -7,6 +7,7 @@ qwen_llm = Qwen3LLM(
 )
 
 # 直接生成文本
-response = qwen_llm("用 3 句话介绍 LangChain 的作用")
+response = qwen_llm("如果你不知道答案，就说你不知道，不要试图编造答案。尽量回答五句话以上。尽量使答案简洁。小孩脑袋发热，怎么回事，可能由什么引起的？")
 print("生成结果：")
+
 print(response)
