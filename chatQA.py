@@ -40,10 +40,10 @@ def init_qwen3_rag_chroma(
             persist_directory=chroma_persist_dir,  # 向量库本地存储路径
             embedding_function=qwen3_embeddings  # 检索时用相同的嵌入模型处理查询
         )
-        print(f"✅ 成功加载 Chroma 向量库！路径：{chroma_persist_dir}，集合名：{chroma_collection_name}")
+        print(f"成功加载 Chroma 向量库！路径：{chroma_persist_dir}，集合名：{chroma_collection_name}")
         # 可选：验证向量库规模（查看文档片段总数）
         doc_count = chroma_vector_store._collection.count()
-        print(f"✅ 向量库中包含 {doc_count} 个文档片段")
+        print(f"向量库中包含 {doc_count} 个文档片段")
     except Exception as e:
         raise RuntimeError(
             f"加载 Chroma 向量库失败！请检查路径/集合名是否正确，或向量库是否已创建：{str(e)}"
@@ -78,8 +78,8 @@ def run_rag_conversation(rag_chain: ConversationalRetrievalChain):
     运行带记忆的 RAG 对话交互（每次对话仅查询 Chroma 向量库，不重新向量化）
     :param rag_chain: 初始化后的 RAG 链
     """
-    print("📌 带记忆的 Qwen3 RAG 对话（Chroma 版）已启动！")
-    print("💡 操作提示：输入问题获取答案，输入 'exit' 退出，输入 'clear' 清空对话历史\n")
+    print("带记忆的 Qwen3 RAG 对话（Chroma 版）已启动！")
+    print("操作提示：输入问题获取答案，输入 'exit' 退出，输入 'clear' 清空对话历史\n")
 
     while True:
         user_query = input("你：")
@@ -114,7 +114,7 @@ def run_rag_conversation(rag_chain: ConversationalRetrievalChain):
             print(f"\n系统：{answer}\n")
 
             # 输出参考文档（可选，让用户知道答案来源，增强可信度）
-            print("🔍 参考文档片段（前3条）：")
+            print("参考文档片段（前3条）：")
             for i, doc in enumerate(source_docs, 1):
                 # 提取文档元数据（如来源路径、页码，需创建向量库时已存入）
                 doc_source = doc.metadata.get("source", "未知来源")
@@ -132,9 +132,10 @@ def run_rag_conversation(rag_chain: ConversationalRetrievalChain):
 if __name__ == "__main__":
     # 初始化 RAG 链（需替换为你的 Chroma 向量库路径和集合名）
     rag_chain = init_qwen3_rag_chroma(
-        chroma_persist_dir="./chroma_pumpkin_db",  # 你的 Chroma 向量库路径
+        chroma_persist_dir="./data/medicalQA/vectordb/chorma",  # 你的 Chroma 向量库路径
         chroma_collection_name="qwen3_embeddings"  # 你的 Chroma 集合名（创建时的名称）
     )
 
     # 启动对话交互
+
     run_rag_conversation(rag_chain)
