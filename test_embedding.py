@@ -127,8 +127,8 @@ def retrieve_from_db(vector_db: Chroma, query: str, top_k: int = 3) -> List:
 
 if __name__ == "__main__":
     # 配置路径
-    PDF_PATH = "./data/pumpkin_book.pdf"  # 替换为你的 PDF 路径
-    DB_PATH = "./chroma_pumpkin_db"  # 向量库存储路径
+    PDF_PATH = "./data/pumpkin_book.pdf"  
+    DB_PATH = "./chroma_pumpkin_db" 
 
     # 构建向量数据库
     vector_db = build_vector_db(PDF_PATH, DB_PATH)
@@ -146,4 +146,5 @@ if __name__ == "__main__":
         print(f"\n===== 与 '{query}' 最相关的 {len(similar_docs)} 个片段 =====")
         for i, doc in enumerate(similar_docs, 1):
             print(f"\n【片段 {i}】页码: {doc['page']}")
+
             print(f"内容: {doc['content'][:300]}...")  # 预览前 300 字符
