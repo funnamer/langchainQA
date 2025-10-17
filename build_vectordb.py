@@ -4,17 +4,15 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from qwen3_embeddings import Qwen3EmbeddingAPI
 from langchain_community.vectorstores import Chroma
 
-# 加载PDF文档
+
 loader = PyMuPDFLoader("./data/pediatrics.pdf")
 pdf_pages = loader.load()
 print(f"载入后的变量类型为：{type(pdf_pages)}，该 PDF 一共包含 {len(pdf_pages)} 页")
 
-# 文本预处理（应用到所有页面）
+
 pattern = re.compile(r'[^\u4e00-\u9fff](\n)[^\u4e00-\u9fff]', re.DOTALL)
 for page in pdf_pages:
-    # 移除特定模式的换行
     page.page_content = re.sub(pattern, lambda match: match.group(0).replace('\n', ''), page.page_content)
-    # 清理特殊字符
     page.page_content = page.page_content.replace('•', '').replace(' ', '').replace('• ', '')
 
 # 文本分割
@@ -43,8 +41,6 @@ for i in range(0, total_docs, batch_size):
     batch_docs = split_docs[start:end]
 
     print(f"开始处理第 {start + 1} 至 {end} 个文档（共 {total_docs} 个）")
-
-    # 首次创建向量库，后续追加文档
     if vectordb is None:
         vectordb = Chroma.from_documents(
             documents=batch_docs,
@@ -56,6 +52,5 @@ for i in range(0, total_docs, batch_size):
 
     print(f"已完成第 {start + 1} 至 {end} 个文档的处理，当前向量库总数：{vectordb._collection.count()}\n")
 
-# 持久化向量库
-vectordb.persist()
+
 print(f"所有文档处理完成，最终向量库中存储的数量：{vectordb._collection.count()}")
