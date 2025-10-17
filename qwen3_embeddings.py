@@ -21,21 +21,19 @@ class Qwen3EmbeddingAPI(Embeddings):
         try:
             # 构造请求体（参数名必须和服务端的 EmbeddingRequest 一致：texts、normalize、dim）
             payload = {
-                "texts": texts,          # 服务端要求的「文本列表」参数名
-                "normalize": self.normalize,  # 服务端可选参数
-                "dim": self.dim          # 服务端可选参数（32-1024）
+                "texts": texts,       
+                "normalize": self.normalize, 
+                "dim": self.dim         
             }
-            # 发送 POST 请求（Content-Type 必须是 application/json）
+
             response = requests.post(
                 url=self.api_url,
-                json=payload,  # 自动设置 Content-Type: application/json
-                timeout=30  # 超时时间（避免服务卡死后一直等待）
+                json=payload,  
+                timeout=30  
             )
-            # 处理响应（服务端返回格式是 {"code":200, "data":{"embeddings":...}}）
             response.raise_for_status()  # 抛出 HTTP 错误（4xx/5xx）
             result = response.json()
 
-            # 校验服务端返回是否包含嵌入向量
             if result.get("code") != 200:
                 raise RuntimeError(f"服务端返回错误：{result.get('message', '未知错误')}")
             if "embeddings" not in result.get("data", {}):
@@ -56,5 +54,5 @@ class Qwen3EmbeddingAPI(Embeddings):
     def embed_query(self, text: str) -> List[float]:
         if not text.strip():
             return []
-        # 服务端要求传列表，所以把单个文本包装成列表
+
         return self._call_api([text])[0]
